@@ -53,3 +53,5 @@ pubspec.lock
 /MkConfig
 tmp/
 .metadata
+SyncWin
+*~
