@@ -1,0 +1,9 @@
+#! /bin/bash
+/opt/dart-sdk/bin/dart format lib test example
+VERS=$(grep -o '^version: [0-9.]*' pubspec.yaml | grep -o "[0-9.]*")
+perl -pi -e "s/const applicationVersion = '[0-9.]+'/const applicationVersion = '$VERS'/" lib/src/page/application_data.dart
+perl -pi -e "s/Version: [0-9.]+/Version: $VERS/" debian/debian.yaml
+grep "Version" lib/src/page/application_data.dart debian/debian.yaml
+
+#./Coverage.sh
+

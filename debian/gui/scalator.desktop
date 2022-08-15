@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Scalator
+GenericName=Scalator
+Comment=A program to convert image files (reduces the resolution).
+Terminal=false
+Type=Application
+Categories=Utility
+Keywords=Flutter;share;files;

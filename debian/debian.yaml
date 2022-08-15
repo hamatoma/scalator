@@ -1,0 +1,16 @@
+flutter_app: 
+  command: scalator
+  arch: x64
+  parent: /usr/local/lib
+
+control:
+  Package: scalator
+  Version: 1.0.0
+  Architecture: amd64
+  Essential: no
+  Priority: optional
+  Depends: libglib2.0-dev,libgtk-3-0,libstdc++6
+
+  Maintainer: "J. Hamatoma <debian@hamatoma.de"
+  Description: "Conversion of image files (shrinks resolution)."
+
