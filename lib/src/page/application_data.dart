@@ -22,7 +22,7 @@ class ApplicationData implements ErrorHandlerCollector {
   static ApplicationData? _instance;
   final BaseConfiguration configuration;
   final BaseLogger logger;
-  static const applicationVersion = '1.0.0';
+  static const applicationVersion = '1.1.0';
 
   /// Signature: AppBar func(String title)
   final AppBarBuilder appBarBuilder;
@@ -55,8 +55,7 @@ class ApplicationData implements ErrorHandlerCollector {
   /// <page_full_name>: <last_error_message>
   final _lastErrorMessageMap = <String, String>{};
 
-  String rootDirectory =
-      Directory.systemTemp.path.startsWith('/') ? '/' : 'c:\\';
+  String rootDirectory = OsInfo().root();
 
   factory ApplicationData() => _instance!;
 
@@ -79,6 +78,14 @@ class ApplicationData implements ErrorHandlerCollector {
     if (value != null) {
       targetDirectory.path = value;
     }
+    value = String.fromEnvironment('scalator_source');
+    if (value != null) {
+      sourceDirectory.path = value;
+    }
+    value = String.fromEnvironment('scalator_target');
+    if (value != null) {
+      targetDirectory.path = value;
+    }
   }
 
   /// Resets the statistic data.
@@ -90,14 +97,10 @@ class ApplicationData implements ErrorHandlerCollector {
     copiedFiles = 0;
   }
 
+  /// At now there is no critical error.
   @override
   bool criticalError(String errorMessage,
       {String? caller, String? customParameter}) {
-    if (caller != null && caller == 'RestPersistance.runRequest') {
-      if (errorMessage.contains('SocketException: OS Error')) {
-        setLastErrorMessage(null, 'Keine Verbindung zum Server');
-      }
-    }
     return false;
   }
 

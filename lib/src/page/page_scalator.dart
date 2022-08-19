@@ -5,6 +5,7 @@ import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
+import 'package:scalator/src/helper/os_info.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../helper/file_supplier_async.dart';
@@ -104,7 +105,9 @@ class PageScalatorState extends State<PageScalator> {
                                   left: padding, right: padding),
                               child: ElevatedButton(
                                 onPressed: () => selectDirectory(
-                                    context, applicationData.sourceDirectory),
+                                    context,
+                                    sourceDirectoryController.text,
+                                    applicationData.sourceDirectory),
                                 child: Text('Auswahl'),
                               )),
                           Expanded(
@@ -161,7 +164,9 @@ class PageScalatorState extends State<PageScalator> {
                                 EdgeInsets.only(left: padding, right: padding),
                             child: ElevatedButton(
                               onPressed: () => selectDirectory(
-                                  context, applicationData.targetDirectory),
+                                  context,
+                                  targetDirectoryController.text,
+                                  applicationData.targetDirectory),
                               child: Text('Auswahl'),
                             ),
                           ),
@@ -476,17 +481,31 @@ class PageScalatorState extends State<PageScalator> {
   }
 
   /// Selects a directory with an dialog.
-  /// [dirInfo] defines the start directory.
+  /// [preferredDirectory]: the start directory (if not empty)
+  /// [dirInfo]: if [preferredDirectory] this directory defines the start directory.
   /// The selection was stored into [dirInfo].
-  void selectDirectory(context, DirInfo dirInfo) async {
+  void selectDirectory(
+      context, String preferredDirectory, DirInfo dirInfo) async {
+    final start = preferredDirectory.isNotEmpty
+        ? preferredDirectory
+        : dirInfo.path ?? OsInfo().homeDirectory;
+    final ignoreDot =
+        start.length <= 1 || !path.basename(start).startsWith('.');
     dirInfo.path = await FilesystemPicker.open(
-      title: '${dirInfo.label} auswählen',
       context: context,
-      rootDirectory: Directory(dirInfo.path ?? applicationData.rootDirectory),
+      title: '${dirInfo.label} auswählen',
+      rootDirectory: Directory(OsInfo().root()),
+      rootName: '',
+      directory: Directory(start),
       fsType: FilesystemType.folder,
+      itemFilter: (FileSystemEntity fsEntity, String path, String name) =>
+          !ignoreDot || !name.startsWith('.'),
       pickText: 'Den aktuellen Ordner auswählen',
       //folderIconColor: Colors.teal,
     );
+    if (dirInfo.path != null && dirInfo.path!.startsWith('//')) {
+      dirInfo.path = dirInfo.path!.substring(1);
+    }
     redraw();
   }
 

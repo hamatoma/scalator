@@ -47,6 +47,11 @@ class OsInfo {
       }
     }
   }
+
+  /// Returns the path of a specified base directory.
+  ///
+  /// [what]: the type of the base directory, e.g. DirectoryType.theHome
+  /// [node]: if not null the return value is completed with this file node
   String pathOf(DirectoryType what, {String? node}) {
     String rc;
     switch (what) {
@@ -61,6 +66,15 @@ class OsInfo {
       case DirectoryType.theData:
         rc = node == null ? dataDirectory : '$dataDirectory$separator$node';
         break;
+    }
+    return rc;
+  }
+
+  /// Returns the root directory.
+  String root() {
+    String rc = '/';
+    if (isWindows) {
+      rc = r'c:\';
     }
     return rc;
   }
